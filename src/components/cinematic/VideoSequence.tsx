@@ -7,33 +7,73 @@ export interface VideoSequenceRef {
   updateProgress: (progress: number) => void;
 }
 
+function primeVideoFrame(video: HTMLVideoElement) {
+  const showFirstFrame = () => {
+    if (video.readyState >= 1 && video.duration) {
+      video.currentTime = 0;
+    }
+  };
+
+  video.addEventListener('loadeddata', showFirstFrame, { once: true });
+  if (video.readyState >= 1) {
+    showFirstFrame();
+  }
+}
+
+function loadVideoSource(video: HTMLVideoElement, src: string, objectPosition: string) {
+  if (video.getAttribute('src') !== src) {
+    video.src = src;
+  }
+  video.style.objectPosition = objectPosition;
+  video.load();
+  primeVideoFrame(video);
+}
+
 export const VideoSequence = forwardRef<VideoSequenceRef>((_, ref) => {
   const videoLayerA = useRef<HTMLVideoElement>(null);
   const videoLayerB = useRef<HTMLVideoElement>(null);
   const breakpointRef = useBreakpoint();
-  
+
   const stateRef = useRef({
     activeIndex: -1,
-    activeLayer: 'A', // 'A' or 'B'
+    activeLayer: 'A' as 'A' | 'B',
   });
-  // Mobile rAF coalescing refs
   const rafIdRef = useRef<number | null>(null);
   const targetTimeRef = useRef<number>(0);
   const lastAppliedTimeRef = useRef<number>(-1);
   const lastUpdateTimeRef = useRef<number>(0);
 
-
-  // Preload first video
+  // Eagerly load all hero videos as soon as the component mounts.
   useEffect(() => {
+    const breakpoint = breakpointRef.current;
+
+    outfits.forEach((outfit) => {
+      const preloadVideo = document.createElement('video');
+      preloadVideo.preload = 'auto';
+      preloadVideo.muted = true;
+      preloadVideo.playsInline = true;
+      preloadVideo.src = outfit.videoSrc;
+      preloadVideo.load();
+    });
+
     if (videoLayerA.current) {
-      videoLayerA.current.src = outfits[0].videoSrc;
-      videoLayerA.current.style.objectPosition = outfits[0].positioning.video[breakpointRef.current];
-      videoLayerA.current.load();
+      loadVideoSource(
+        videoLayerA.current,
+        outfits[0].videoSrc,
+        outfits[0].positioning.video[breakpoint]
+      );
       gsap.set(videoLayerA.current, { opacity: 1 });
     }
+
     if (videoLayerB.current) {
+      loadVideoSource(
+        videoLayerB.current,
+        outfits[1]?.videoSrc ?? outfits[0].videoSrc,
+        (outfits[1] ?? outfits[0]).positioning.video[breakpoint]
+      );
       gsap.set(videoLayerB.current, { opacity: 0 });
     }
+
     stateRef.current.activeIndex = 0;
   }, [breakpointRef]);
 
@@ -41,12 +81,11 @@ export const VideoSequence = forwardRef<VideoSequenceRef>((_, ref) => {
     updateProgress: (progress: number) => {
       const numGarments = outfits.length;
       const activeIndex = Math.min(Math.floor(progress * numGarments), numGarments - 1);
-      
+
       const segmentStart = activeIndex / numGarments;
       const segmentEnd = (activeIndex + 1) / numGarments;
       const segmentDuration = segmentEnd - segmentStart;
-      
-      // Explicit segment progress calculation normalized 0 to 1
+
       const normalizedSegmentProgress = Math.max(0, Math.min(1, (progress - segmentStart) / segmentDuration));
 
       const vA = videoLayerA.current;
@@ -56,51 +95,37 @@ export const VideoSequence = forwardRef<VideoSequenceRef>((_, ref) => {
       const s = stateRef.current;
       const currentBreakpoint = breakpointRef.current;
 
-      // Ensure the active video always has the correct responsive object-position
       const activeVideoLayer = s.activeLayer === 'A' ? vA : vB;
       activeVideoLayer.style.objectPosition = outfits[activeIndex].positioning.video[currentBreakpoint];
 
-      // Handle layer switching at garment boundary
       if (activeIndex !== s.activeIndex) {
         const nextLayer = s.activeLayer === 'A' ? 'B' : 'A';
         const nextVideo = nextLayer === 'A' ? vA : vB;
         const prevVideo = nextLayer === 'A' ? vB : vA;
 
-        // Ensure the incoming layer has the right video loaded and positioned
-        if (nextVideo.getAttribute('src') !== outfits[activeIndex].videoSrc) {
-            nextVideo.src = outfits[activeIndex].videoSrc;
-            nextVideo.load();
-        }
-        nextVideo.style.objectPosition = outfits[activeIndex].positioning.video[currentBreakpoint];
+        loadVideoSource(
+          nextVideo,
+          outfits[activeIndex].videoSrc,
+          outfits[activeIndex].positioning.video[currentBreakpoint]
+        );
 
-        // Crossfade to avoid black frames and harsh transitions
         gsap.to(nextVideo, { opacity: 1, duration: 0.6, ease: 'power2.inOut', overwrite: 'auto' });
-        gsap.to(prevVideo, { 
-          opacity: 0, 
-          duration: 0.6, 
-          ease: 'power2.inOut', 
+        gsap.to(prevVideo, {
+          opacity: 0,
+          duration: 0.6,
+          ease: 'power2.inOut',
           overwrite: 'auto',
-          onComplete: () => {
-             // Mobile hardware decoder cleanup
-             if (currentBreakpoint === 'mobile') {
-               prevVideo.src = '';
-               prevVideo.load();
-             }
-          }
         });
 
         s.activeLayer = nextLayer;
         s.activeIndex = activeIndex;
       }
 
-      // Update native video currentTime using scrub, mobile-optimized with FPS gating
       if (activeVideoLayer.readyState >= 1 && activeVideoLayer.duration) {
         const rawTarget = normalizedSegmentProgress * activeVideoLayer.duration;
         if (currentBreakpoint === 'mobile') {
-          // Quantize to 24 fps frame grid
           const frameDur = 1 / 24;
           const quantized = Math.round(rawTarget / frameDur) * frameDur;
-          // Store latest target and schedule rAF if not already pending
           targetTimeRef.current = quantized;
           if (rafIdRef.current === null) {
             rafIdRef.current = requestAnimationFrame(() => {
@@ -118,32 +143,12 @@ export const VideoSequence = forwardRef<VideoSequenceRef>((_, ref) => {
             });
           }
         } else {
-          // Desktop/tablet direct assignment
           activeVideoLayer.currentTime = Math.min(rawTarget, activeVideoLayer.duration - 0.01);
         }
       }
-
-      // Preload window logic (Desktop only to save mobile memory)
-      if (currentBreakpoint !== 'mobile') {
-        if (normalizedSegmentProgress > 0.85 && activeIndex < numGarments - 1) {
-           const incomingIndex = activeIndex + 1;
-           const idleLayer = s.activeLayer === 'A' ? vB : vA;
-           if (idleLayer.getAttribute('src') !== outfits[incomingIndex].videoSrc) {
-               idleLayer.src = outfits[incomingIndex].videoSrc;
-               idleLayer.load();
-           }
-        } else if (normalizedSegmentProgress < 0.15 && activeIndex > 0) {
-           const incomingIndex = activeIndex - 1;
-           const idleLayer = s.activeLayer === 'A' ? vB : vA;
-           if (idleLayer.getAttribute('src') !== outfits[incomingIndex].videoSrc) {
-               idleLayer.src = outfits[incomingIndex].videoSrc;
-               idleLayer.load();
-           }
-        }
-      }
-    }
+    },
   }));
-  // Cleanup any pending rAF on unmount
+
   useEffect(() => {
     return () => {
       if (rafIdRef.current !== null) {
@@ -155,9 +160,25 @@ export const VideoSequence = forwardRef<VideoSequenceRef>((_, ref) => {
 
   return (
     <div className="absolute inset-0 bg-[var(--color-mahek-charcoal)] overflow-hidden pointer-events-none">
+      {/* Hidden eager preloaders — keeps all four videos buffering from first paint */}
+      <div className="sr-only" aria-hidden="true">
+        {outfits.map((outfit) => (
+          <video
+            key={outfit.id}
+            src={outfit.videoSrc}
+            preload="auto"
+            muted
+            playsInline
+            tabIndex={-1}
+          />
+        ))}
+      </div>
+
       <video
         ref={videoLayerA}
         className="absolute inset-0 w-full h-full object-cover"
+        src={outfits[0].videoSrc}
+        poster={outfits[0].posterSrc}
         playsInline
         muted
         preload="auto"
@@ -165,11 +186,12 @@ export const VideoSequence = forwardRef<VideoSequenceRef>((_, ref) => {
       <video
         ref={videoLayerB}
         className="absolute inset-0 w-full h-full object-cover opacity-0"
+        src={outfits[1]?.videoSrc}
+        poster={outfits[1]?.posterSrc}
         playsInline
         muted
         preload="auto"
       />
-      {/* Subtle luxury contrast treatment overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
     </div>
   );
