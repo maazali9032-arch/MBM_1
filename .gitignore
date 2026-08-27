@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+workers/upload/node_modules/
+
+# Environment & secrets — never commit
+.env
+.env.local
+.env.*.local
+workers/upload/.dev.vars
+
+# Build output
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+
+# Cloudflare local dev
+.wrangler/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Misc
+*.local
+.cache/

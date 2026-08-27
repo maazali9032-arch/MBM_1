@@ -1,0 +1,21 @@
+Junaid Textiles — optimized cinematic assets
+
+IMAGES
+- AVIF: preferred modern format
+- WebP: fallback format
+- Original dimensions retained; no artificial upscaling
+
+VIDEOS
+- H.264 MP4
+- Audio removed (scroll hero does not need audio)
+- Frequent keyframes (~1 second) for better scroll seeking
+- Fast-start MP4 for web delivery
+
+Current video files:
+- SHW-scroll.mp4
+- SHW2-scroll.mp4
+
+Recommended final production:
+- Keep one 10-second video per outfit
+- Target: ~720p or source resolution, H.264, CRF 19–21
+- Generate the remaining outfit videos with the same visual grammar
