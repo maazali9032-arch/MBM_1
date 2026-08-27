@@ -12,7 +12,7 @@ export const siteContent = {
     ],
     phone: "+919618355071",
     rating: 4.7,
-    reviewCount: 239,
+    reviewCount: 233,
     website: "http://www.nirmalsuitinghouse.com/",
     instagram: "https://www.instagram.com/nirmalsuitinghouse/",
     facebook: "https://www.facebook.com/people/Nirmal-Suiting-House/61550972369380/",

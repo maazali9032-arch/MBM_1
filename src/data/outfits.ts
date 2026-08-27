@@ -1,4 +1,8 @@
-export const HERO_MASTER_VIDEO_SRC = '/videos/MASTER_Hero_bg.mp4';
+/** Single merged hero background (~40s, H.264). Do not re-encode this asset. */
+export const HERO_MASTER_VIDEO_SRC = '/videos/MASTER_Hero_bg_optimized.mp4';
+
+/** Native frame rate of MASTER_Hero_bg_optimized.mp4 — used only for mobile scrub quantization. */
+export const HERO_MASTER_VIDEO_FPS = 30;
 
 export interface Outfit {
   id: string;

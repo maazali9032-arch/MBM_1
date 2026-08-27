@@ -116,13 +116,13 @@ export const ProductDetail = ({ params }: { params: { code: string } }) => {
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] font-sans pb-24 relative">
-      <header className="sticky top-0 bg-[#FAF9F6]/95 backdrop-blur-sm z-40 border-b border-[#C5A880]/20 py-6 px-6 md:px-12 flex justify-between items-center">
-        <Link href={`/collections/${categorySlug}`} className="text-xs tracking-[0.2em] uppercase text-[#8C8C8C] hover:text-[#C5A880] transition-colors duration-300">
+      <header className="sticky top-0 bg-[#111111] z-40 border-b border-[#C5A880]/30 py-6 px-6 md:px-12 flex justify-between items-center">
+        <Link href={`/collections/${categorySlug}`} className="text-xs tracking-[0.2em] uppercase text-[#FAF9F6]/80 hover:text-[#C5A880] transition-colors duration-300">
           ← BACK TO {categoryName.toUpperCase()}
         </Link>
-        <h1 className="font-serif text-xl tracking-[0.2em] text-[#1A1A1A] uppercase">
-          MAHEK
-        </h1>
+        <a href="/" className="inline-flex items-center" aria-label="MAHEK home">
+          <img src="/Logo.png" alt="MAHEK" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
+        </a>
         <div className="w-20 hidden md:block" />
       </header>
 

@@ -5,13 +5,41 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const reviews = [
-  { name: "Adnan Khan", rating: 5, comment: "The best place in Tolichowki for wedding sherwanis. Excellent fabrics and perfect fits." },
-  { name: "Rajesh Reddy", rating: 5, comment: "Superb custom tailoring! I got three suits stitched here, and the fitting was absolutely flawless." },
-  { name: "Sameer Ahmed", rating: 5, comment: "Wide collection of premium kurta pajamas and Jodhpuri suits. Best fashion store in Hyderabad." },
-  { name: "Vivek Sen", rating: 5, comment: "Highly professional service. They helped me choose the fabric and styled it precisely to my preference." },
-  { name: "Mustafa Ali", rating: 5, comment: "Amazing catalog. From sherwani to formal suits, their craftsmanship is unmatched. 10/10." },
-  { name: "Karan Johar", rating: 5, comment: "Incredible attention to detail. Mahek has been my go-to suiting house for years now." },
-  { name: "Mohammed Imran", rating: 5, comment: "Extremely happy with my wedding outfit. Got so many compliments. Thank you, Nirmal Suiting House!" },
+  {
+    name: "P. Rampurshotham Reddy",
+    rating: 5,
+    comment: "Excellent collection of linen fabrics with impressive variety. Mr. Chirag was welcoming and professional, and Tauseef bhai patiently helped me explore multiple options and ensured a smooth billing process. Great pricing and an overall pleasant experience — looking forward to visiting again.",
+  },
+  {
+    name: "Mohammad Anees",
+    rating: 5,
+    comment: "Fabric collection and staff behaviour was very good, stitching was also done in 2 days. I'd recommend anyone looking for decent looks can visit.",
+  },
+  {
+    name: "Mujtaba GM",
+    rating: 5,
+    comment: "Nirmal Suiting House (Mahek) truly stands out for its quality fabrics, excellent stitching, and professional service. The staff is very cooperative and understands customer requirements perfectly. Timely delivery and great attention to detail make it a highly reliable place for premium suiting. Highly recommended.",
+  },
+  {
+    name: "PD Pawde",
+    rating: 5,
+    comment: "I stitched my suit from here and I’m very satisfied with the fitting and quality. The staff was polite and understood my design properly. Excellent service and on-time delivery. Thank you Nirmal suit house team.",
+  },
+  {
+    name: "Gauri A Koustubhan",
+    rating: 5,
+    comment: "I got a 2 piece suit stitched for my son who is lean and tall! He was very happy with the fitting and he looked good in the suit! Thank you Nirmal suiting house for making my good looking son look more handsome!!",
+  },
+  {
+    name: "Annalilia Balboa",
+    rating: 5,
+    comment: "Loved it! I was initially a little skeptical on how the suit was going to turn out but I was blown away with how it came out. Loved their suggestions and the timely way the suit was made. Would definitely buy again.",
+  },
+  {
+    name: "Nihar Mp",
+    rating: 5,
+    comment: "Amazing experience with them. Perfect fit and stitching, and great attention to detail. Delivered on time and exactly as I wanted.",
+  },
 ];
 
 export const ReviewsSection = () => {
@@ -70,7 +98,7 @@ export const ReviewsSection = () => {
             {"★".repeat(5)}
           </div>
           <span className="font-sans text-sm tracking-widest text-[#8C8C8C]">
-            4.7 / 5 · 241 Google Reviews
+            4.7 / 5 · 233 Google Reviews
           </span>
         </div>
       </div>

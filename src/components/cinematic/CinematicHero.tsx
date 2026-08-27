@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
-import { useLocation } from 'wouter';
-import { useLenis } from '../../hooks/useLenis';
+import { useLocation, Link } from 'wouter';
+import { useLenis, destroyLenis } from '../../hooks/useLenis';
 import { VideoSequence, type VideoSequenceRef } from './VideoSequence';
 import { HeroText, type HeroTextRef } from './HeroText';
 import { ScrollIndicator } from './ScrollIndicator';
@@ -11,6 +11,15 @@ import { useBreakpoint } from '../../hooks/useBreakpoint';
 import { siteContent } from '../../data/site';
 
 gsap.registerPlugin(ScrollTrigger);
+
+function teardownHeroScroll() {
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill(true));
+  ScrollTrigger.clearScrollMemory();
+  destroyLenis();
+  document.body.style.removeProperty('overflow');
+  document.documentElement.style.removeProperty('overflow');
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+}
 
 export function CinematicHero() {
   useLenis();
@@ -43,6 +52,8 @@ export function CinematicHero() {
 
   const handleCollections = () => {
     setMenuOpen(false);
+    // Pin + Lenis must be cleared before SPA navigate or mobile stays stuck on the hero.
+    teardownHeroScroll();
     setLocation('/collections');
   };
 
@@ -103,67 +114,120 @@ export function CinematicHero() {
       }
     }, heroRef);
 
+    // After pin setup / remount (e.g. return from Collections), force a clean text+video start.
     requestAnimationFrame(() => {
-      textRef.current?.updateProgress(0);
+      textRef.current?.reset();
       videoSeqRef.current?.updateProgress(0);
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      destroyLenis();
+    };
   }, [prefersReducedMotion, breakpointRef]);
 
-  const NavBar = () => (
-    <nav className="absolute top-0 inset-x-0 pt-[env(safe-area-inset-top)] z-50 px-6 py-6 md:px-12 md:py-10 flex justify-between items-center pointer-events-auto">
-      <a href="/" className="font-serif text-2xl md:text-3xl tracking-[0.2em] text-[var(--color-mahek-ivory)] drop-shadow-md" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-        MAHEK
-      </a>
+  const navLinks = (
+    <div className="hidden md:flex gap-12 font-sans text-xs tracking-[0.15em] font-light text-[var(--color-mahek-ivory)]">
+      <Link
+        href="/collections"
+        onClick={teardownHeroScroll}
+        className="hover:text-[var(--color-mahek-accent)] transition-colors drop-shadow-md"
+      >
+        COLLECTION
+      </Link>
+      <button
+        type="button"
+        onClick={handleContact}
+        className="hover:text-[var(--color-mahek-accent)] transition-colors drop-shadow-md cursor-pointer"
+      >
+        CONTACT
+      </button>
+      <button
+        type="button"
+        onClick={handleVisit}
+        className="hover:text-[var(--color-mahek-accent)] transition-colors drop-shadow-md cursor-pointer"
+      >
+        VISIT
+      </button>
+    </div>
+  );
 
-      <div className="hidden md:flex gap-12 font-sans text-xs tracking-[0.15em] font-light text-[var(--color-mahek-ivory)]">
-        <a href="/collections" className="hover:text-[var(--color-mahek-accent)] transition-colors drop-shadow-md">COLLECTION</a>
-        <button type="button" onClick={handleContact} className="hover:text-[var(--color-mahek-accent)] transition-colors drop-shadow-md cursor-pointer">CONTACT</button>
-        <button type="button" onClick={handleVisit} className="hover:text-[var(--color-mahek-accent)] transition-colors drop-shadow-md cursor-pointer">VISIT</button>
-      </div>
+  const mobileMenu = (
+    <div className="md:hidden relative z-50">
+      <button
+        type="button"
+        onClick={() => setMenuOpen((o) => !o)}
+        className="font-sans text-xs tracking-[0.15em] font-light text-[var(--color-mahek-ivory)] cursor-pointer drop-shadow-md px-2 py-1"
+        aria-expanded={menuOpen}
+        aria-label="Toggle menu"
+      >
+        {menuOpen ? 'CLOSE' : 'MENU'}
+      </button>
 
-      <div className="md:hidden relative">
-        <button
-          type="button"
-          onClick={() => setMenuOpen((o) => !o)}
-          className="font-sans text-xs tracking-[0.15em] font-light text-[var(--color-mahek-ivory)] cursor-pointer drop-shadow-md px-2 py-1"
-          aria-expanded={menuOpen}
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? 'CLOSE' : 'MENU'}
-        </button>
+      {menuOpen && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-[60]"
+            onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="absolute right-0 top-full mt-3 z-[70] min-w-[200px] bg-[#1A1A1A]/95 backdrop-blur-md border border-white/10 rounded-sm shadow-2xl overflow-hidden">
+            <button
+              type="button"
+              onClick={handleCollections}
+              className="w-full text-left px-5 py-4 text-xs tracking-[0.15em] text-[var(--color-mahek-ivory)] hover:bg-white/10 transition-colors cursor-pointer border-b border-white/5"
+            >
+              COLLECTIONS
+            </button>
+            <button
+              type="button"
+              onClick={handleContact}
+              className="w-full text-left px-5 py-4 text-xs tracking-[0.15em] text-[var(--color-mahek-ivory)] hover:bg-white/10 transition-colors cursor-pointer border-b border-white/5"
+            >
+              CONTACT
+            </button>
+            <button
+              type="button"
+              onClick={handleVisit}
+              className="w-full text-left px-5 py-4 text-xs tracking-[0.15em] text-[var(--color-mahek-ivory)] hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              VISIT
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 
-        {menuOpen && (
-          <>
-            <div className="fixed inset-0 bg-black/40 z-40" onClick={() => setMenuOpen(false)} aria-hidden="true" />
-            <div className="absolute right-0 top-full mt-3 z-50 min-w-[200px] bg-[#1A1A1A]/95 backdrop-blur-md border border-white/10 rounded-sm shadow-2xl overflow-hidden">
-              <button type="button" onClick={handleCollections} className="w-full text-left px-5 py-4 text-xs tracking-[0.15em] text-[var(--color-mahek-ivory)] hover:bg-white/10 transition-colors cursor-pointer border-b border-white/5">
-                COLLECTIONS
-              </button>
-              <button type="button" onClick={handleContact} className="w-full text-left px-5 py-4 text-xs tracking-[0.15em] text-[var(--color-mahek-ivory)] hover:bg-white/10 transition-colors cursor-pointer border-b border-white/5">
-                CONTACT
-              </button>
-              <button type="button" onClick={handleVisit} className="w-full text-left px-5 py-4 text-xs tracking-[0.15em] text-[var(--color-mahek-ivory)] hover:bg-white/10 transition-colors cursor-pointer">
-                VISIT
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </nav>
+  const brandLink = (
+    <Link href="/" className="inline-flex items-center shrink-0" aria-label="MAHEK home">
+      <img
+        src="/Logo.png"
+        alt="MAHEK"
+        className="h-9 md:h-12 w-auto object-contain drop-shadow-md"
+        decoding="async"
+      />
+    </Link>
   );
 
   if (prefersReducedMotion) {
     return (
       <div className="w-full bg-[var(--color-mahek-charcoal)] text-[var(--color-mahek-ivory)] flex flex-col">
-        <NavBar />
+        <nav className="relative pt-[env(safe-area-inset-top)] z-50 px-6 py-6 md:px-12 md:py-10 flex justify-between items-center">
+          {brandLink}
+          {navLinks}
+          {mobileMenu}
+        </nav>
         {outfits.map((outfit) => (
           <div key={outfit.id} className="relative w-full h-screen">
             <img src={outfit.posterSrc} alt={outfit.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/40 flex flex-col justify-center items-center text-center">
-              <h1 className="font-serif text-4xl md:text-6xl font-extralight tracking-widest uppercase drop-shadow-lg">{outfit.title}</h1>
-              <p className="font-sans text-white/80 mt-4 text-xl font-light drop-shadow-md">{outfit.description}</p>
+              <h1 className="font-serif text-4xl md:text-6xl font-extralight tracking-widest uppercase drop-shadow-lg">
+                {outfit.title}
+              </h1>
+              <p className="font-sans text-white/80 mt-4 text-xl font-light drop-shadow-md">
+                {outfit.description}
+              </p>
             </div>
           </div>
         ))}
@@ -174,9 +238,16 @@ export function CinematicHero() {
   return (
     <div ref={heroRef} className="relative w-full h-screen bg-[var(--color-mahek-charcoal)] overflow-hidden">
       <VideoSequence ref={videoSeqRef} />
-      <NavBar />
+      <nav className="absolute top-0 inset-x-0 pt-[env(safe-area-inset-top)] z-50 px-6 py-6 md:px-12 md:py-10 flex justify-between items-center pointer-events-auto">
+        {brandLink}
+        {navLinks}
+        {mobileMenu}
+      </nav>
       <HeroText ref={textRef} />
-      <div ref={indicatorRef} className="absolute inset-x-0 bottom-8 pb-[env(safe-area-inset-bottom)] pointer-events-none">
+      <div
+        ref={indicatorRef}
+        className="absolute inset-x-0 bottom-8 pb-[env(safe-area-inset-bottom)] pointer-events-none"
+      >
         <ScrollIndicator />
       </div>
     </div>

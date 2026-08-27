@@ -5,6 +5,13 @@ import gsap from 'gsap';
 
 export interface HeroTextRef {
   updateProgress: (progress: number) => void;
+  /** Hard reset — call when hero remounts / scroll returns to start */
+  reset: () => void;
+}
+
+function killOutfitTweens(title: HTMLElement | null, desc: HTMLElement | null) {
+  if (title) gsap.killTweensOf(title);
+  if (desc) gsap.killTweensOf(desc);
 }
 
 export const HeroText = forwardRef<HeroTextRef>((_, ref) => {
@@ -15,6 +22,7 @@ export const HeroText = forwardRef<HeroTextRef>((_, ref) => {
   const breakpointRef = useBreakpoint();
 
   const [currentBreakpoint, setCurrentBreakpoint] = useState(breakpointRef.current);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const checkBreakpoint = () => {
@@ -30,39 +38,62 @@ export const HeroText = forwardRef<HeroTextRef>((_, ref) => {
     };
   }, [currentBreakpoint, breakpointRef]);
 
-  const hideOutfit = useCallback((index: number, animate: boolean) => {
+  const hideOutfitInstant = useCallback((index: number) => {
+    const title = titleRefs.current[index];
+    const desc = descRefs.current[index];
+    killOutfitTweens(title, desc);
+    if (title || desc) {
+      gsap.set([title, desc].filter(Boolean), {
+        opacity: 0,
+        x: 0,
+        y: 0,
+        visibility: 'hidden',
+      });
+    }
+  }, []);
+
+  const hideOutfitAnimated = useCallback((index: number) => {
     const title = titleRefs.current[index];
     const desc = descRefs.current[index];
     if (!title || !desc) return;
+
+    killOutfitTweens(title, desc);
 
     const wasEven = index % 2 === 0;
     const titleToX = wasEven ? 60 : -60;
     const descToX = wasEven ? -60 : 60;
 
-    if (animate) {
-      gsap.to(title, {
-        opacity: 0,
-        x: titleToX,
-        duration: 0.5,
-        overwrite: 'auto',
-        onComplete: () => gsap.set(title, { visibility: 'hidden' }),
-      });
-      gsap.to(desc, {
-        opacity: 0,
-        x: descToX,
-        duration: 0.5,
-        overwrite: 'auto',
-        onComplete: () => gsap.set(desc, { visibility: 'hidden' }),
-      });
-    } else {
-      gsap.set([title, desc], { opacity: 0, x: 0, y: 0, visibility: 'hidden' });
-    }
+    gsap.to(title, {
+      opacity: 0,
+      x: titleToX,
+      duration: 0.45,
+      overwrite: true,
+      onComplete: () => {
+        // Only hide if this outfit is still not the active one (avoids race on remount/nav).
+        if (currentIndexRef.current !== index) {
+          gsap.set(title, { visibility: 'hidden', x: 0, y: 0 });
+        }
+      },
+    });
+    gsap.to(desc, {
+      opacity: 0,
+      x: descToX,
+      duration: 0.45,
+      overwrite: true,
+      onComplete: () => {
+        if (currentIndexRef.current !== index) {
+          gsap.set(desc, { visibility: 'hidden', x: 0, y: 0 });
+        }
+      },
+    });
   }, []);
 
   const showOutfit = useCallback((index: number, animate: boolean) => {
     const title = titleRefs.current[index];
     const desc = descRefs.current[index];
     if (!title || !desc) return;
+
+    killOutfitTweens(title, desc);
 
     const isEven = index % 2 === 0;
     const titleFromX = isEven ? -60 : 60;
@@ -74,62 +105,95 @@ export const HeroText = forwardRef<HeroTextRef>((_, ref) => {
       gsap.fromTo(
         title,
         { opacity: 0, x: titleFromX, y: 0 },
-        { opacity: 1, x: 0, y: 0, duration: 0.8, ease: 'power2.out', overwrite: 'auto' }
+        { opacity: 1, x: 0, y: 0, duration: 0.7, ease: 'power2.out', overwrite: true }
       );
       gsap.fromTo(
         desc,
         { opacity: 0, x: descFromX, y: 10 },
-        { opacity: 1, x: 0, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.1, overwrite: 'auto' }
+        { opacity: 1, x: 0, y: 0, duration: 0.7, ease: 'power2.out', delay: 0.08, overwrite: true }
       );
     } else {
       gsap.set([title, desc], { opacity: 1, x: 0, y: 0, visibility: 'visible' });
     }
   }, []);
 
+  /** Exactly one outfit visible — kill every other layer first. */
   const setActiveOutfit = useCallback(
     (index: number, animate: boolean) => {
       if (index < 0 || index >= outfits.length) return;
-
-      if (currentIndexRef.current >= 0 && currentIndexRef.current !== index) {
-        hideOutfit(currentIndexRef.current, animate);
+      if (index === currentIndexRef.current && currentIndexRef.current >= 0) {
+        // Still force exclusivity in case a stale tween left another layer visible.
+        outfits.forEach((_, i) => {
+          if (i !== index) hideOutfitInstant(i);
+        });
+        return;
       }
+
+      const previous = currentIndexRef.current;
+      currentIndexRef.current = index;
+      setActiveIndex(index);
+
+      outfits.forEach((_, i) => {
+        if (i === index) return;
+        if (animate && i === previous && previous >= 0) {
+          hideOutfitAnimated(i);
+        } else {
+          hideOutfitInstant(i);
+        }
+      });
 
       showOutfit(index, animate);
-      currentIndexRef.current = index;
     },
-    [hideOutfit, showOutfit]
+    [hideOutfitAnimated, hideOutfitInstant, showOutfit]
   );
 
-  // Show Sherwani (first outfit) immediately on load and after breakpoint changes
+  const reset = useCallback(() => {
+    outfits.forEach((_, i) => hideOutfitInstant(i));
+    currentIndexRef.current = -1;
+    setActiveOutfit(0, false);
+  }, [hideOutfitInstant, setActiveOutfit]);
+
+  // Fresh mount / breakpoint change: exclusive reset to first tagline
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
-      outfits.forEach((_, i) => {
-        if (i !== 0) hideOutfit(i, false);
-      });
-      setActiveOutfit(0, false);
+      reset();
     });
-    return () => cancelAnimationFrame(frame);
-  }, [currentBreakpoint, hideOutfit, setActiveOutfit]);
+    return () => {
+      cancelAnimationFrame(frame);
+      // Kill all hero text tweens on unmount so they can't fire after remount.
+      titleRefs.current.forEach((el) => el && gsap.killTweensOf(el));
+      descRefs.current.forEach((el) => el && gsap.killTweensOf(el));
+    };
+  }, [currentBreakpoint, reset]);
 
-  useImperativeHandle(ref, () => ({
-    updateProgress: (progress: number) => {
-      if (!containerRef.current) return;
-      const numGarments = outfits.length;
-      const activeIndex = Math.min(Math.floor(progress * numGarments), numGarments - 1);
-
-      if (activeIndex !== currentIndexRef.current) {
-        setActiveOutfit(activeIndex, true);
-      }
-    },
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      updateProgress: (progress: number) => {
+        if (!containerRef.current) return;
+        const numGarments = outfits.length;
+        const nextIndex = Math.min(
+          Math.floor(Math.max(0, Math.min(1, progress)) * numGarments),
+          numGarments - 1
+        );
+        setActiveOutfit(nextIndex, true);
+      },
+      reset,
+    }),
+    [setActiveOutfit, reset]
+  );
 
   return (
-    <div ref={containerRef} className="absolute inset-0 pointer-events-none pb-[env(safe-area-inset-bottom)]">
+    <div
+      ref={containerRef}
+      className="absolute inset-0 pointer-events-none pb-[env(safe-area-inset-bottom)]"
+    >
       {outfits.map((outfit, i) => (
         <div
           key={outfit.id}
           className={`absolute flex flex-col ${outfit.positioning.text[currentBreakpoint]}`}
-          aria-hidden={currentIndexRef.current !== i}
+          aria-hidden={activeIndex !== i}
+          style={{ zIndex: activeIndex === i ? 2 : 1 }}
         >
           <h1
             ref={(el) => {

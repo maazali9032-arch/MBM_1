@@ -8,9 +8,14 @@ export const Footer = () => {
       <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 pb-16 border-b border-white/5">
         {/* Column 1: Brand Info */}
         <div className="space-y-6">
-          <h2 className="font-serif text-3xl tracking-[0.2em] text-[#FAF9F6] uppercase">
-            MAHEK
-          </h2>
+          <a href="/" className="inline-flex items-center" aria-label="MAHEK home">
+            <img
+              src="/Logo.png"
+              alt="MAHEK"
+              className="h-10 md:h-12 w-auto object-contain"
+              decoding="async"
+            />
+          </a>
           <p className="text-sm font-light text-[#8C8C8C] leading-relaxed max-w-xs">
             Refined dressing, defined by detail. Discover custom tailoring, premium fabrics, and handcrafted traditional occasion wear.
           </p>
