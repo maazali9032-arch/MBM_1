@@ -9,6 +9,7 @@ import {
   PRODUCTS_PAGE_SIZE,
   type CatalogueProduct,
 } from '../../lib/catalogueQueries';
+import { allCollectionsPath, collectionFilterPath } from '../../lib/collectionRoutes';
 
 type CollectionItem = {
   id: string;
@@ -178,7 +179,7 @@ export const CollectionsPage = () => {
 
   const applyFilter = (filterId: string) => {
     setActiveFilter(filterId);
-    setLocation(filterId === 'all' ? '/collections' : `/collections?category=${filterId}`);
+    setLocation(filterId === 'all' ? allCollectionsPath : collectionFilterPath(filterId));
   };
 
   useEffect(() => {

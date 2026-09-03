@@ -1,15 +1,15 @@
-import { Router, Route, Switch } from 'wouter';
+import { Redirect, Router, Route, Switch } from 'wouter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Pages & Layouts
 import { ShowroomHome } from './components/editorial/ShowroomHome';
-import { CollectionBrowse } from './components/catalogue/CollectionBrowse';
 import { ProductDetail } from './components/catalogue/ProductDetail';
 import { SearchCatalogue } from './components/catalogue/SearchCatalogue';
 import { CollectionsPage } from './components/editorial/CollectionsPage';
 import { Footer } from './components/editorial/Footer';
 import { WhatsAppButton } from './components/editorial/WhatsAppButton';
 import { RouteEffects } from './components/RouteEffects';
+import { collectionFilterPath } from './lib/collectionRoutes';
 
 // Admin Pages
 import { AdminLogin } from './components/admin/AdminLogin';
@@ -42,13 +42,7 @@ function App() {
             </>
           </Route>
           <Route path="/collections/:slug">
-            {(params) => (
-              <>
-                <CollectionBrowse params={params} />
-                <Footer />
-                <WhatsAppButton />
-              </>
-            )}
+            {(params) => <Redirect to={collectionFilterPath(params.slug)} replace />}
           </Route>
           <Route path="/products/:code">
             {(params) => (

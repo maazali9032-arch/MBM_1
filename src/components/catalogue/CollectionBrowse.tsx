@@ -3,6 +3,7 @@ import { Link } from 'wouter';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { siteContent } from '../../data/site';
+import { collectionFilterPath } from '../../lib/collectionRoutes';
 import { WhatsAppIcon } from '../ui/WhatsAppIcon';
 import { fetchCatalogueProducts, PRODUCTS_PAGE_SIZE } from '../../lib/catalogueQueries';
 
@@ -134,7 +135,7 @@ export const CollectionBrowse = ({ params }: { params: { slug: string } }) => {
           {categories?.map((cat: any) => (
             <Link
               key={cat.id}
-              href={`/collections/${cat.slug}`}
+              href={collectionFilterPath(cat.slug)}
               className={`text-xs tracking-[0.2em] uppercase transition-colors duration-300 cursor-pointer ${
                 cat.slug === params.slug
                   ? 'text-[#C5A880] font-medium border-b border-[#C5A880] pb-1'

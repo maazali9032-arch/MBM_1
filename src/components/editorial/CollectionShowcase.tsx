@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import { collectionFilterPath, allCollectionsPath } from '../../lib/collectionRoutes';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -152,7 +153,7 @@ export const CollectionShowcase = () => {
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     ScrollTrigger.clearScrollMemory();
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
-    setLocation(`/collections?category=${categoryId}`);
+    setLocation(collectionFilterPath(categoryId));
   };
 
   return (
@@ -231,7 +232,7 @@ export const CollectionShowcase = () => {
               type="button"
               onClick={() => {
                 ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-                setLocation('/collections');
+                setLocation(allCollectionsPath);
               }}
               className="inline-block px-10 py-3 border border-[#C5A880] text-xs tracking-[0.2em] font-sans font-light uppercase text-[#1A1A1A] hover:bg-[#C5A880] hover:text-[#FAF9F6] transition-all duration-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880] cursor-pointer"
             >

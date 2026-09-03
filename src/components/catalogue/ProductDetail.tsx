@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { siteContent } from '../../data/site';
 import { WhatsAppIcon } from '../ui/WhatsAppIcon';
+import { collectionFilterPath } from '../../lib/collectionRoutes';
 
 const fetchProductDetail = async (productCode: string) => {
   const { data: product, error: prodError } = await supabase
@@ -117,7 +118,7 @@ export const ProductDetail = ({ params }: { params: { code: string } }) => {
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] font-sans pb-24 relative">
       <header className="sticky top-0 bg-[#111111] z-40 border-b border-[#C5A880]/30 py-6 px-6 md:px-12 flex justify-between items-center">
-        <Link href={`/collections/${categorySlug}`} className="text-xs tracking-[0.2em] uppercase text-[#FAF9F6]/80 hover:text-[#C5A880] transition-colors duration-300">
+        <Link href={collectionFilterPath(categorySlug)} className="text-xs tracking-[0.2em] uppercase text-[#FAF9F6]/80 hover:text-[#C5A880] transition-colors duration-300">
           ← BACK TO {categoryName.toUpperCase()}
         </Link>
         <a href="/" className="inline-flex items-center" aria-label="MAHEK home">
@@ -215,7 +216,7 @@ export const ProductDetail = ({ params }: { params: { code: string } }) => {
                 Inquire via WhatsApp
               </a>
 
-              <Link href={`/collections/${categorySlug}`} className="w-full py-4 border border-[#C5A880] text-[#1A1A1A] hover:bg-[#C5A880]/5 font-sans text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase rounded-sm flex items-center justify-center transition-colors duration-300">
+              <Link href={collectionFilterPath(categorySlug)} className="w-full py-4 border border-[#C5A880] text-[#1A1A1A] hover:bg-[#C5A880]/5 font-sans text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase rounded-sm flex items-center justify-center transition-colors duration-300">
                 Back to Collection
               </Link>
             </div>
