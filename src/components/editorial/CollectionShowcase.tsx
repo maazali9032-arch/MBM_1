@@ -207,7 +207,11 @@ export const CollectionShowcase = () => {
               <a
                 key={cat.slug}
                 href={collectionFilterPath(cat.categoryId)}
-                onPointerDown={(event) => event.stopPropagation()}
+                onPointerDown={(event) => {
+                  // Mouse clicks belong to the link, while touch gestures are
+                  // allowed to reach the strip so mobile users can swipe cards.
+                  if (event.pointerType === 'mouse') event.stopPropagation();
+                }}
                 className="flex-shrink-0 w-[240px] md:w-[280px] h-full flex flex-col justify-between group relative cursor-pointer text-left bg-transparent border-0 p-0"
               >
                 <div className="w-full h-[85%] overflow-hidden rounded-sm relative">
