@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useLocation } from 'wouter';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
-import { allCollectionsPath, openCollection } from '../../lib/collectionRoutes';
+import { allCollectionsPath, collectionFilterPath } from '../../lib/collectionRoutes';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,7 +17,6 @@ const categories = [
 ];
 
 export const CollectionShowcase = () => {
-  const [, setLocation] = useLocation();
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
@@ -29,6 +27,8 @@ export const CollectionShowcase = () => {
     startScrollLeft: 0,
     isDragging: false,
   });
+  const suppressNextCardClick = useRef(false);
+  const clearSuppressedClickTimer = useRef<number | null>(null);
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const horizontalTweenRef = useRef<gsap.core.Tween | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -124,6 +124,11 @@ export const CollectionShowcase = () => {
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
+    if (clearSuppressedClickTimer.current !== null) {
+      window.clearTimeout(clearSuppressedClickTimer.current);
+      clearSuppressedClickTimer.current = null;
+    }
+    suppressNextCardClick.current = false;
     dragState.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -135,25 +140,32 @@ export const CollectionShowcase = () => {
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerId !== dragState.current.pointerId) return;
-    if (!dragState.current.isDragging && Math.abs(event.clientX - dragState.current.startX) <= 5) return;
+    if (!dragState.current.isDragging && Math.abs(event.clientX - dragState.current.startX) <= 12) return;
     dragState.current.isDragging = true;
     syncDragToScroll(event.clientX);
   };
 
   const finishPointerDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerId !== dragState.current.pointerId) return;
+    const dragged = dragState.current.isDragging;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
     dragState.current.pointerId = -1;
-    if (event.type === 'pointercancel') dragState.current.isDragging = false;
-  };
+    dragState.current.isDragging = false;
 
-  const goToCategory = (categoryId: string) => {
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    ScrollTrigger.clearScrollMemory();
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
-    openCollection(categoryId);
+    // Block only the click generated immediately after a swipe. Keeping the
+    // old drag flag set also blocked the next genuine category click.
+    if (event.type !== 'pointercancel' && dragged) {
+      suppressNextCardClick.current = true;
+
+      // A drag does not always generate a click. Clear this guard on the next
+      // event-loop turn so it cannot swallow a later intentional card click.
+      clearSuppressedClickTimer.current = window.setTimeout(() => {
+        suppressNextCardClick.current = false;
+        clearSuppressedClickTimer.current = null;
+      }, 0);
+    }
   };
 
   return (
@@ -183,19 +195,19 @@ export const CollectionShowcase = () => {
             onPointerUp={finishPointerDrag}
             onPointerCancel={finishPointerDrag}
             onClickCapture={(event) => {
-              if (dragState.current.isDragging) {
+              if (suppressNextCardClick.current) {
                 event.preventDefault();
                 event.stopPropagation();
-                dragState.current.isDragging = false;
+                suppressNextCardClick.current = false;
               }
             }}
             className="flex items-center gap-6 md:gap-10 h-[80%] flex-nowrap overflow-x-hidden relative z-20 touch-pan-y select-none"
           >
             {categories.map((cat, i) => (
-              <button
+              <a
                 key={cat.slug}
-                type="button"
-                onClick={() => goToCategory(cat.categoryId)}
+                href={collectionFilterPath(cat.categoryId)}
+                onPointerDown={(event) => event.stopPropagation()}
                 className="flex-shrink-0 w-[240px] md:w-[280px] h-full flex flex-col justify-between group relative cursor-pointer text-left bg-transparent border-0 p-0"
               >
                 <div className="w-full h-[85%] overflow-hidden rounded-sm relative">
@@ -219,7 +231,7 @@ export const CollectionShowcase = () => {
                     {cat.title}
                   </h3>
                 </div>
-              </button>
+              </a>
             ))}
           </div>
 
@@ -230,10 +242,7 @@ export const CollectionShowcase = () => {
           >
             <button
               type="button"
-              onClick={() => {
-                ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-                setLocation(allCollectionsPath);
-              }}
+              onClick={() => window.location.assign(allCollectionsPath)}
               className="inline-block px-10 py-3 border border-[#C5A880] text-xs tracking-[0.2em] font-sans font-light uppercase text-[#1A1A1A] hover:bg-[#C5A880] hover:text-[#FAF9F6] transition-all duration-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880] cursor-pointer"
             >
               Browse All Collections
