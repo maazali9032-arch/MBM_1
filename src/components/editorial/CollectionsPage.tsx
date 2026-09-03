@@ -9,7 +9,7 @@ import {
   PRODUCTS_PAGE_SIZE,
   type CatalogueProduct,
 } from '../../lib/catalogueQueries';
-import { allCollectionsPath, collectionFilterPath } from '../../lib/collectionRoutes';
+import { allCollectionsPath, openCollection } from '../../lib/collectionRoutes';
 
 type CollectionItem = {
   id: string;
@@ -106,7 +106,7 @@ const collectionsData: CollectionItem[] = [
 ];
 
 export const CollectionsPage = () => {
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
   const search = useSearch();
 
   const [activeItem, setActiveItem] = useState<CollectionItem | null>(null);
@@ -179,7 +179,11 @@ export const CollectionsPage = () => {
 
   const applyFilter = (filterId: string) => {
     setActiveFilter(filterId);
-    setLocation(filterId === 'all' ? allCollectionsPath : collectionFilterPath(filterId));
+    if (filterId === 'all') {
+      window.location.assign(allCollectionsPath);
+      return;
+    }
+    openCollection(filterId);
   };
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { siteContent } from '../../data/site';
-import { Link } from 'wouter';
 import { allCollectionsPath, collectionFilterPath } from '../../lib/collectionRoutes';
 
 export const Footer = () => {
@@ -53,13 +52,13 @@ export const Footer = () => {
             The Collections
           </h3>
           <ul className="space-y-3 text-sm font-light text-[#8C8C8C]">
-            <li><Link href={collectionFilterPath('sherwani')} className="hover:text-[#C5A880] transition-colors duration-300">Sherwanis</Link></li>
-            <li><Link href={collectionFilterPath('suit')} className="hover:text-[#C5A880] transition-colors duration-300">Suits & Blazers</Link></li>
-            <li><Link href={collectionFilterPath('bandgala')} className="hover:text-[#C5A880] transition-colors duration-300">Bandgalas</Link></li>
-            <li><Link href={collectionFilterPath('jodhpuri')} className="hover:text-[#C5A880] transition-colors duration-300">Jodhpuri</Link></li>
-            <li><Link href={collectionFilterPath('kurta')} className="hover:text-[#C5A880] transition-colors duration-300">Kurta Pajamas</Link></li>
-            <li><Link href={collectionFilterPath('nehru')} className="hover:text-[#C5A880] transition-colors duration-300">Nehru Jackets</Link></li>
-            <li><Link href={allCollectionsPath} className="hover:text-[#C5A880] transition-colors duration-300 font-medium text-[#C5A880]/80">View All Collections →</Link></li>
+            <li><a href={collectionFilterPath('sherwani')} className="hover:text-[#C5A880] transition-colors duration-300">Sherwanis</a></li>
+            <li><a href={collectionFilterPath('suit')} className="hover:text-[#C5A880] transition-colors duration-300">Suits & Blazers</a></li>
+            <li><a href={collectionFilterPath('bandgala')} className="hover:text-[#C5A880] transition-colors duration-300">Bandgalas</a></li>
+            <li><a href={collectionFilterPath('jodhpuri')} className="hover:text-[#C5A880] transition-colors duration-300">Jodhpuri</a></li>
+            <li><a href={collectionFilterPath('kurta')} className="hover:text-[#C5A880] transition-colors duration-300">Kurta Pajamas</a></li>
+            <li><a href={collectionFilterPath('nehru')} className="hover:text-[#C5A880] transition-colors duration-300">Nehru Jackets</a></li>
+            <li><a href={allCollectionsPath} className="hover:text-[#C5A880] transition-colors duration-300 font-medium text-[#C5A880]/80">View All Collections →</a></li>
           </ul>
         </div>
 

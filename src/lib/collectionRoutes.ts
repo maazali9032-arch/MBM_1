@@ -20,3 +20,12 @@ export function collectionFilterPath(category: string): string {
 }
 
 export const allCollectionsPath = '/collections';
+
+/**
+ * Category links deliberately use a document navigation. It makes the URL the
+ * source of truth and avoids a pinned GSAP section retaining the home view
+ * after the browser address has changed.
+ */
+export function openCollection(category: string): void {
+  window.location.assign(collectionFilterPath(category));
+}
