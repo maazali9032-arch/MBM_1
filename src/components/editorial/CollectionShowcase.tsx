@@ -22,6 +22,15 @@ export const CollectionShowcase = () => {
   const cardRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
+  const dragState = useRef({
+    pointerId: -1,
+    startX: 0,
+    startScrollLeft: 0,
+    isDragging: false,
+  });
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const horizontalTweenRef = useRef<gsap.core.Tween | null>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -40,6 +49,7 @@ export const CollectionShowcase = () => {
           refreshPriority: -10,
         }
       });
+      timelineRef.current = tl;
 
       // 1. Solid plain white card slides in from right to center
       tl.fromTo(cardRef.current,
@@ -59,6 +69,11 @@ export const CollectionShowcase = () => {
         duration: 2,
       });
 
+      const horizontalTween = tl.getChildren(false, true, false).at(-1) as gsap.core.Tween;
+
+      horizontalTweenRef.current = horizontalTween;
+      scrollTriggerRef.current = tl.scrollTrigger ?? null;
+
       // 3. Card becomes transparent with a clean border
       tl.to(cardRef.current, {
         backgroundColor: 'rgba(255, 255, 255, 0)',
@@ -74,8 +89,64 @@ export const CollectionShowcase = () => {
       );
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      scrollTriggerRef.current = null;
+      horizontalTweenRef.current = null;
+      timelineRef.current = null;
+      ctx.revert();
+    };
   }, []);
+
+  // A horizontal drag is translated into progress through the pinned section.
+  // This keeps touch/trackpad interaction and normal vertical scrolling on one timeline.
+  const syncDragToScroll = (clientX: number) => {
+    const strip = stripRef.current;
+    const trigger = scrollTriggerRef.current;
+    const horizontalTween = horizontalTweenRef.current;
+    const drag = dragState.current;
+    if (!strip || !trigger || !horizontalTween || drag.pointerId === -1) return;
+
+    const travel = Math.max(0, strip.scrollWidth - strip.clientWidth + 48);
+    if (!travel || trigger.end <= trigger.start) return;
+
+    const nextScrollLeft = Math.min(travel, Math.max(0, drag.startScrollLeft + drag.startX - clientX));
+    const timeline = timelineRef.current;
+    if (!timeline) return;
+
+    const horizontalProgress = nextScrollLeft / travel;
+    const timelineProgress = (horizontalTween.startTime() + horizontalProgress * horizontalTween.duration()) / timeline.duration();
+    const pageScroll = trigger.start + timelineProgress * (trigger.end - trigger.start);
+
+    window.scrollTo({ top: pageScroll, left: 0, behavior: 'auto' });
+    drag.isDragging ||= Math.abs(clientX - drag.startX) > 5;
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    dragState.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: stripRef.current?.scrollLeft ?? 0,
+      isDragging: false,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerId !== dragState.current.pointerId) return;
+    if (!dragState.current.isDragging && Math.abs(event.clientX - dragState.current.startX) <= 5) return;
+    dragState.current.isDragging = true;
+    syncDragToScroll(event.clientX);
+  };
+
+  const finishPointerDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerId !== dragState.current.pointerId) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    dragState.current.pointerId = -1;
+    if (event.type === 'pointercancel') dragState.current.isDragging = false;
+  };
 
   const goToCategory = (categoryId: string) => {
     ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
@@ -106,7 +177,18 @@ export const CollectionShowcase = () => {
           {/* Scrollable Strip inside the Card */}
           <div
             ref={stripRef}
-            className="flex items-center gap-6 md:gap-10 h-[80%] flex-nowrap overflow-x-hidden relative z-20"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={finishPointerDrag}
+            onPointerCancel={finishPointerDrag}
+            onClickCapture={(event) => {
+              if (dragState.current.isDragging) {
+                event.preventDefault();
+                event.stopPropagation();
+                dragState.current.isDragging = false;
+              }
+            }}
+            className="flex items-center gap-6 md:gap-10 h-[80%] flex-nowrap overflow-x-hidden relative z-20 touch-pan-y select-none"
           >
             {categories.map((cat, i) => (
               <button

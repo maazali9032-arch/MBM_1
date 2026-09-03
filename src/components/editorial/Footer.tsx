@@ -51,12 +51,12 @@ export const Footer = () => {
             The Collections
           </h3>
           <ul className="space-y-3 text-sm font-light text-[#8C8C8C]">
-            <li><a href="/collections/sherwanis" className="hover:text-[#C5A880] transition-colors duration-300">Sherwanis</a></li>
-            <li><a href="/collections/suits" className="hover:text-[#C5A880] transition-colors duration-300">Suits & Blazers</a></li>
-            <li><a href="/collections/bandgalas" className="hover:text-[#C5A880] transition-colors duration-300">Bandgalas</a></li>
-            <li><a href="/collections/jodhpuris" className="hover:text-[#C5A880] transition-colors duration-300">Jodhpuris</a></li>
-            <li><a href="/collections/kurta-pajamas" className="hover:text-[#C5A880] transition-colors duration-300">Kurta Pajamas</a></li>
-            <li><a href="/collections/nehru-jackets" className="hover:text-[#C5A880] transition-colors duration-300">Nehru Jackets</a></li>
+            <li><a href="/collections?category=sherwani" className="hover:text-[#C5A880] transition-colors duration-300">Sherwanis</a></li>
+            <li><a href="/collections?category=suit" className="hover:text-[#C5A880] transition-colors duration-300">Suits & Blazers</a></li>
+            <li><a href="/collections?category=bandgala" className="hover:text-[#C5A880] transition-colors duration-300">Bandgalas</a></li>
+            <li><a href="/collections?category=jodhpuri" className="hover:text-[#C5A880] transition-colors duration-300">Jodhpuris</a></li>
+            <li><a href="/collections?category=kurta" className="hover:text-[#C5A880] transition-colors duration-300">Kurta Pajamas</a></li>
+            <li><a href="/collections?category=nehru" className="hover:text-[#C5A880] transition-colors duration-300">Nehru Jackets</a></li>
             <li><a href="/collections" className="hover:text-[#C5A880] transition-colors duration-300 font-medium text-[#C5A880]/80">View All Collections →</a></li>
           </ul>
         </div>
