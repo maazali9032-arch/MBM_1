@@ -11,7 +11,7 @@ export const Footer = () => {
         <div className="space-y-6">
           <a href="/" className="inline-flex items-center" aria-label="Maqdoom's Big Mall home">
             <img
-              src="/LOGO.png"
+              src="/Logo.png"
               alt="Maqdoom's Big Mall"
               className="h-10 md:h-12 w-auto object-contain"
               decoding="async"

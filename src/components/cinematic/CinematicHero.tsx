@@ -202,7 +202,7 @@ export function CinematicHero() {
   const brandLink = (
     <Link href="/" className="inline-flex items-center shrink-0" aria-label="Maqdoom's Big Mall home">
       <img
-        src="/LOGO.png"
+        src="/Logo.png"
         alt="Maqdoom's Big Mall"
         className="h-9 md:h-12 w-auto object-contain drop-shadow-md"
         decoding="async"

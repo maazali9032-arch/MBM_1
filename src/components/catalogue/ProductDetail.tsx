@@ -122,7 +122,7 @@ export const ProductDetail = ({ params }: { params: { code: string } }) => {
           ← BACK TO {categoryName.toUpperCase()}
         </Link>
         <a href="/" className="inline-flex items-center" aria-label="Maqdoom's Big Mall home">
-          <img src="/LOGO.png" alt="Maqdoom's Big Mall" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
+          <img src="/Logo.png" alt="Maqdoom's Big Mall" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
         </a>
         <div className="w-20 hidden md:block" />
       </header>

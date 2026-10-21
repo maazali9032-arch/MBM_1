@@ -122,7 +122,7 @@ export const CollectionBrowse = ({ params }: { params: { slug: string } }) => {
           ← SHOWROOM
         </Link>
         <Link href="/" className="inline-flex items-center" aria-label="Maqdoom's Big Mall home">
-          <img src="/LOGO.png" alt="Maqdoom's Big Mall" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
+          <img src="/Logo.png" alt="Maqdoom's Big Mall" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
         </Link>
         <Link href="/search" className="text-xs tracking-[0.2em] uppercase text-[#FAF9F6]/80 hover:text-[#C5A880] transition-colors duration-300">
           SEARCH
