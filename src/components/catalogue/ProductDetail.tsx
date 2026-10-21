@@ -121,8 +121,8 @@ export const ProductDetail = ({ params }: { params: { code: string } }) => {
         <Link href={collectionFilterPath(categorySlug)} className="text-xs tracking-[0.2em] uppercase text-[#FAF9F6]/80 hover:text-[#C5A880] transition-colors duration-300">
           ← BACK TO {categoryName.toUpperCase()}
         </Link>
-        <a href="/" className="inline-flex items-center" aria-label="MAHEK home">
-          <img src="/Logo.png" alt="MAHEK" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
+        <a href="/" className="inline-flex items-center" aria-label="Maqdoom's Big Mall home">
+          <img src="/LOGO.png" alt="Maqdoom's Big Mall" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
         </a>
         <div className="w-20 hidden md:block" />
       </header>
@@ -201,7 +201,7 @@ export const ProductDetail = ({ params }: { params: { code: string } }) => {
               </div>
               <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3 text-xs sm:text-sm">
                 <span className="font-semibold text-[#1A1A1A] uppercase tracking-widest shrink-0">Location</span>
-                <span className="text-[#8C8C8C]">Stitched at Tolichowki branch</span>
+                <span className="text-[#8C8C8C]">Available at our Pathergatti store</span>
               </div>
             </div>
 

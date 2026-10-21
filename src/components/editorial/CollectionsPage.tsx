@@ -226,7 +226,7 @@ export const CollectionsPage = () => {
 
   const handleCategoryInquiry = (item: CollectionItem) => {
     const number = siteContent.business.phone.replace(/[^0-9]/g, '');
-    const message = `Hi, I'm interested in inquiring about your ${item.title} collection at MAHEK.\n\nCategory: ${item.subtitle}\nCollection code: ${item.slug}`;
+    const message = `Hi, I'm interested in inquiring about your ${item.title} collection at Maqdoom's Big Mall.\n\nCategory: ${item.subtitle}\nCollection code: ${item.slug}`;
     window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -234,7 +234,7 @@ export const CollectionsPage = () => {
     const categoryName = product.categories?.name || 'Collection';
     const title = product.name || `${categoryName} ${product.product_code}`;
     const number = siteContent.business.phone.replace(/[^0-9]/g, '');
-    const message = `Hi, I'm interested in inquiring about a design at MAHEK.\n\nProduct: ${title}\nCode: ${product.product_code}\nCategory: ${categoryName}`;
+    const message = `Hi, I'm interested in inquiring about a design at Maqdoom's Big Mall.\n\nProduct: ${title}\nCode: ${product.product_code}\nCategory: ${categoryName}`;
     window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -277,8 +277,8 @@ export const CollectionsPage = () => {
         >
           <span>←</span> Back to Showroom
         </a>
-        <a href="/" className="inline-flex items-center" aria-label="MAHEK home">
-          <img src="/Logo.png" alt="MAHEK" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
+        <a href="/" className="inline-flex items-center" aria-label="Maqdoom's Big Mall home">
+          <img src="/LOGO.png" alt="Maqdoom's Big Mall" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
         </a>
         <div className="w-20 hidden md:block" />
       </header>
@@ -290,7 +290,7 @@ export const CollectionsPage = () => {
         </h2>
         <div className="w-16 h-[1px] bg-[#C5A880] mx-auto my-4 md:my-6" />
         <p className="font-sans text-sm md:text-base font-light text-[#8C8C8C] leading-relaxed">
-          From ceremonial royal sherwanis to sharply tailored Italian suits, explore custom-fitted wardrobes stitched by master craftsmen at Nirmal Suiting House.
+          From ceremonial royal sherwanis to sharply tailored Italian suits, explore custom-fitted wardrobes from Maqdoom's Big Mall.
         </p>
       </section>
 
@@ -509,7 +509,7 @@ export const CollectionsPage = () => {
                 <div className="w-12 h-[1px] bg-[#C5A880]" />
                 <p className="text-sm font-light text-[#8C8C8C] leading-relaxed">{activeItem.desc}</p>
                 <div className="space-y-2 text-xs sm:text-sm text-[#8C8C8C]">
-                  <p><span className="font-semibold text-[#1A1A1A] uppercase tracking-widest">Stitched at: </span>Nirmal Suiting House, Tolichowki</p>
+                  <p><span className="font-semibold text-[#1A1A1A] uppercase tracking-widest">Available at: </span>Maqdoom's Big Mall, Pathergatti</p>
                   <p><span className="font-semibold text-[#1A1A1A] uppercase tracking-widest">Fabrics: </span>{activeItem.fabric}</p>
                   <p><span className="font-semibold text-[#1A1A1A] uppercase tracking-widest">Fittings: </span>Bespoke custom fittings (Trial session included)</p>
                 </div>

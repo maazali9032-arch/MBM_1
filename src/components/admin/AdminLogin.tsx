@@ -46,7 +46,7 @@ export const AdminLogin = () => {
         
         <div className="text-center space-y-2">
           <span className="text-xs uppercase tracking-[0.25em] text-[#C5A880] block">Administrator Access</span>
-          <h1 className="font-serif text-3xl tracking-wide uppercase">MAHEK Admin</h1>
+          <h1 className="font-serif text-3xl tracking-wide uppercase">Maqdoom's Big Mall Admin</h1>
           <div className="w-12 h-[1px] bg-[#C5A880] mx-auto mt-4" />
         </div>
 
@@ -66,7 +66,7 @@ export const AdminLogin = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. admin@mahek.com"
+              placeholder="Email address"
               className="w-full px-4 py-2.5 bg-white border border-neutral-300 rounded-sm focus:outline-none focus:border-[#C5A880] focus:ring-1 focus:ring-[#C5A880] text-sm font-light tracking-wide shadow-sm"
             />
           </div>

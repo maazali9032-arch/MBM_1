@@ -6,19 +6,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 const branches = [
   {
-    name: "Tolichowki Branch (Mahek)",
-    address: "A/1, 9-4-87/1, beside Mughal Residency, MD Lines, Toli Chowki, Hyderabad, Telangana 500008",
-    phone: "096183 55071",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Nirmal+Suiting+House+Tolichowki",
+    name: "Maqdoom's Big Mall",
+    address: "22-7-177, Maqdoom Building, Pathergatti, Charminar Road, Hyderabad, Telangana 500002",
+    phone: "040 6620 4666",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Maqdoom%27s+Big+Mall+Pathergatti+Hyderabad",
     image: "/images/Mahek.webp",
     avif: "/images/Mahek.avif",
-  },
-  {
-    name: "Patel Market / Old Market Branch",
-    address: "Shop No. 21, 1-814, Pathergatti Road, Patel Market, Rikab Gunj, Ghansi Bazaar, Hyderabad, Telangana 500002",
-    phone: "092478 98556",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=Nirmal+Suiting+House+Patel+Market+Hyderabad",
-    image: null,
   }
 ];
 
@@ -83,12 +76,12 @@ export const BranchesSection = () => {
           ref={headingRef}
           className="font-serif text-[clamp(2rem,5vw,3.5rem)] text-center tracking-wider uppercase mb-16"
         >
-          Our Branches
+          Visit Our Store
         </h2>
 
         <div
           ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-stretch"
+          className="grid grid-cols-1 max-w-3xl mx-auto gap-12 items-stretch"
         >
           {branches.map((branch, i) => (
             <div
@@ -96,7 +89,7 @@ export const BranchesSection = () => {
               className="flex flex-col justify-between border border-[#C5A880]/10 bg-white p-8 md:p-12 rounded-sm shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)]"
             >
               <div className="space-y-6">
-                <span className="font-sans text-xs uppercase tracking-[0.2em] text-[#C5A880]">Location 0{i + 1}</span>
+                <span className="font-sans text-xs uppercase tracking-[0.2em] text-[#C5A880]">Pathergatti · Hyderabad</span>
                 <h3 className="font-serif text-xl md:text-2xl text-[#1A1A1A] tracking-wide uppercase">
                   {branch.name}
                 </h3>

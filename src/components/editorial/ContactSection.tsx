@@ -50,23 +50,14 @@ export const ContactSection = () => {
           </a>
         </p>
         <p className="text-center mt-2">
-          Rating: {business.rating} / 5 · {business.reviewCount} Google reviews
+          {business.reviewCount} Google reviews
         </p>
         <div className="text-center mt-4 space-x-4">
-          <a href="tel:+919618355071" className="inline-block px-4 py-2 border border-[#C5A880] text-[#C5A880] rounded hover:bg-[#C5A880]/10 focus:outline-none focus:ring-2 focus:ring-[#C5A880]">
+          <a href={`tel:${business.phone}`} className="inline-block px-4 py-2 border border-[#C5A880] text-[#C5A880] rounded hover:bg-[#C5A880]/10 focus:outline-none focus:ring-2 focus:ring-[#C5A880]">
             {editorial.contact.ctaCall}
           </a>
           <a href={business.googleMaps} target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 border border-[#C5A880] text-[#C5A880] rounded hover:bg-[#C5A880]/10 focus:outline-none focus:ring-2 focus:ring-[#C5A880]">
             {editorial.contact.ctaDirections}
-          </a>
-          <a href={business.instagram} target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 border border-[#C5A880] text-[#C5A880] rounded hover:bg-[#C5A880]/10 focus:outline-none focus:ring-2 focus:ring-[#C5A880]">
-            Instagram
-          </a>
-          <a href={business.website} target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 border border-[#C5A880] text-[#C5A880] rounded hover:bg-[#C5A880]/10 focus:outline-none focus:ring-2 focus:ring-[#C5A880]">
-            Website
-          </a>
-          <a href={business.facebook} target="_blank" rel="noopener noreferrer" className="inline-block px-4 py-2 border border-[#C5A880] text-[#C5A880] rounded hover:bg-[#C5A880]/10 focus:outline-none focus:ring-2 focus:ring-[#C5A880]">
-            Facebook
           </a>
         </div>
         <div className="mt-6 text-center">

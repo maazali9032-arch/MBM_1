@@ -34,7 +34,7 @@ export function CinematicHero() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const whatsappUrl = `https://wa.me/${siteContent.business.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent("Hi, I'm interested in your clothing collections at MAHEK.")}`;
+  const whatsappUrl = `https://wa.me/${siteContent.business.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent("Hi, I'm interested in your clothing collections at Maqdoom's Big Mall.")}`;
 
   const handleVisit = () => {
     setMenuOpen(false);
@@ -200,10 +200,10 @@ export function CinematicHero() {
   );
 
   const brandLink = (
-    <Link href="/" className="inline-flex items-center shrink-0" aria-label="MAHEK home">
+    <Link href="/" className="inline-flex items-center shrink-0" aria-label="Maqdoom's Big Mall home">
       <img
-        src="/Logo.png"
-        alt="MAHEK"
+        src="/LOGO.png"
+        alt="Maqdoom's Big Mall"
         className="h-9 md:h-12 w-auto object-contain drop-shadow-md"
         decoding="async"
       />

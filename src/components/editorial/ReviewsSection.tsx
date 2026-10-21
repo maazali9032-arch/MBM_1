@@ -6,39 +6,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 const reviews = [
   {
-    name: "P. Rampurshotham Reddy",
-    rating: 5,
-    comment: "Excellent collection of linen fabrics with impressive variety. Mr. Chirag was welcoming and professional, and Tauseef bhai patiently helped me explore multiple options and ensured a smooth billing process. Great pricing and an overall pleasant experience — looking forward to visiting again.",
+    name: "JUST BUSINESS",
+    comment: "Found a stylish sherwani here for my function. Overall, a good experience.",
   },
   {
-    name: "Mohammad Anees",
-    rating: 5,
-    comment: "Fabric collection and staff behaviour was very good, stitching was also done in 2 days. I'd recommend anyone looking for decent looks can visit.",
+    name: "Mohammed Ali",
+    comment: "Visited Maqdoom's for wedding shopping and was happy with the options available, quality and the staff behaviour.",
   },
   {
-    name: "Mujtaba GM",
-    rating: 5,
-    comment: "Nirmal Suiting House (Mahek) truly stands out for its quality fabrics, excellent stitching, and professional service. The staff is very cooperative and understands customer requirements perfectly. Timely delivery and great attention to detail make it a highly reliable place for premium suiting. Highly recommended.",
+    name: "sriram Rout",
+    comment: "Bad service.",
   },
   {
-    name: "PD Pawde",
-    rating: 5,
-    comment: "I stitched my suit from here and I’m very satisfied with the fitting and quality. The staff was polite and understood my design properly. Excellent service and on-time delivery. Thank you Nirmal suit house team.",
-  },
-  {
-    name: "Gauri A Koustubhan",
-    rating: 5,
-    comment: "I got a 2 piece suit stitched for my son who is lean and tall! He was very happy with the fitting and he looked good in the suit! Thank you Nirmal suiting house for making my good looking son look more handsome!!",
-  },
-  {
-    name: "Annalilia Balboa",
-    rating: 5,
-    comment: "Loved it! I was initially a little skeptical on how the suit was going to turn out but I was blown away with how it came out. Loved their suggestions and the timely way the suit was made. Would definitely buy again.",
-  },
-  {
-    name: "Nihar Mp",
-    rating: 5,
-    comment: "Amazing experience with them. Perfect fit and stitching, and great attention to detail. Delivered on time and exactly as I wanted.",
+    name: "Om prakash Singer",
+    comment: "Bad service.",
   },
 ];
 
@@ -94,11 +75,8 @@ export const ReviewsSection = () => {
           </h2>
         </div>
         <div className="mt-4 md:mt-0 flex items-center justify-center md:justify-end gap-2">
-          <div className="flex text-[#C5A880]">
-            {"★".repeat(5)}
-          </div>
           <span className="font-sans text-sm tracking-widest text-[#8C8C8C]">
-            4.7 / 5 · 233 Google Reviews
+            148 Google Reviews
           </span>
         </div>
       </div>
@@ -123,9 +101,6 @@ export const ReviewsSection = () => {
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="font-sans font-medium text-sm text-[#FAF9F6] tracking-wider">{rev.name}</span>
-                <div className="flex text-[#C5A880] text-xs">
-                  {"★".repeat(rev.rating)}
-                </div>
               </div>
               <p className="font-sans text-xs md:text-sm text-[#8C8C8C] leading-relaxed italic">
                 "{rev.comment}"

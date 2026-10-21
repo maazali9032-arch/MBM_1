@@ -69,7 +69,7 @@ export const CollectionBrowse = ({ params }: { params: { slug: string } }) => {
   const handleWhatsAppInquiry = (product: { product_code: string; name?: string | null }, categoryName: string) => {
     const title = product.name || `${categoryName} ${product.product_code}`;
     const number = siteContent.business.phone.replace(/[^0-9]/g, '');
-    const message = `Hi, I'm interested in inquiring about a design at MAHEK.\n\nProduct: ${title}\nCode: ${product.product_code}\nCategory: ${categoryName}`;
+    const message = `Hi, I'm interested in inquiring about a design at Maqdoom's Big Mall.\n\nProduct: ${title}\nCode: ${product.product_code}\nCategory: ${categoryName}`;
     window.open(`https://wa.me/${number}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -121,8 +121,8 @@ export const CollectionBrowse = ({ params }: { params: { slug: string } }) => {
         <Link href="/" className="text-xs tracking-[0.2em] uppercase text-[#FAF9F6]/80 hover:text-[#C5A880] transition-colors duration-300">
           ← SHOWROOM
         </Link>
-        <Link href="/" className="inline-flex items-center" aria-label="MAHEK home">
-          <img src="/Logo.png" alt="MAHEK" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
+        <Link href="/" className="inline-flex items-center" aria-label="Maqdoom's Big Mall home">
+          <img src="/LOGO.png" alt="Maqdoom's Big Mall" className="h-8 md:h-10 w-auto object-contain" decoding="async" />
         </Link>
         <Link href="/search" className="text-xs tracking-[0.2em] uppercase text-[#FAF9F6]/80 hover:text-[#C5A880] transition-colors duration-300">
           SEARCH

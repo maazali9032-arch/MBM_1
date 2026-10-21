@@ -33,7 +33,7 @@ export const CollectionItem = ({ index }: { index: number }) => {
         />
         <img
           src={outfit.posterSrc}
-          alt={`${outfit.title} – MAHEK collection`}
+          alt={`${outfit.title} – Maqdoom's Big Mall collection`}
           className={imageClass}
           loading="lazy"
           decoding="async"

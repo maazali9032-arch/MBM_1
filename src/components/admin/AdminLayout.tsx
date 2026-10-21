@@ -47,7 +47,7 @@ export const AdminLayout = ({ children, activeTab }: { children: React.ReactNode
       <div>
         <header className="bg-[#1A1A1A] text-[#FAF9F6] border-b border-[#C5A880]/30 py-4 px-4 sm:px-6 md:px-12 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center shadow-md">
           <div className="flex items-center gap-3 min-w-0">
-            <h1 className="font-serif text-base sm:text-lg tracking-[0.15em] sm:tracking-[0.2em] uppercase truncate">MAHEK PANEL</h1>
+            <h1 className="font-serif text-base sm:text-lg tracking-[0.15em] sm:tracking-[0.2em] uppercase truncate">MAQDOOM'S PANEL</h1>
             <span className="shrink-0 text-[9px] sm:text-[10px] bg-[#C5A880] text-[#1A1A1A] px-2 py-0.5 rounded font-bold uppercase tracking-wider">Admin</span>
           </div>
           <div className="flex items-center gap-4 sm:gap-6 shrink-0">
@@ -98,7 +98,7 @@ export const AdminLayout = ({ children, activeTab }: { children: React.ReactNode
 
       {/* Admin Panel Footer */}
       <footer className="bg-neutral-900 border-t border-neutral-800 py-6 text-center text-xs text-neutral-500 font-light mt-auto">
-        &copy; MAHEK Admin Management Portal. Secured via Supabase Auth & RLS.
+        &copy; Maqdoom's Big Mall Admin Management Portal. Secured via Supabase Auth & RLS.
       </footer>
     </div>
   );
